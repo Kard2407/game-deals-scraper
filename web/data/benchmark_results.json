@@ -1,0 +1,112 @@
+{
+  "timestamp": "2026-11-13 23:25:15",
+  "hardware": {
+    "total_logical_cores": 8,
+    "workload_games_tested": 24,
+    "total_repo_games": 392
+  },
+  "sequential_reference": {
+    "time_seconds": 4.023,
+    "description": "Ejecución lineal monohilo pura (sin Nivel 1, 2 ni 3 de paralelismo)"
+  },
+  "parallel_results": [
+    {
+      "cores": 1,
+      "time_seconds": 3.047,
+      "speedup": 1.0,
+      "speedup_ideal": 1,
+      "efficiency_percent": 100.0
+    },
+    {
+      "cores": 2,
+      "time_seconds": 2.469,
+      "speedup": 1.234,
+      "speedup_ideal": 2,
+      "efficiency_percent": 61.7
+    },
+    {
+      "cores": 4,
+      "time_seconds": 2.479,
+      "speedup": 1.229,
+      "speedup_ideal": 4,
+      "efficiency_percent": 30.73
+    },
+    {
+      "cores": 8,
+      "time_seconds": 3.903,
+      "speedup": 0.781,
+      "speedup_ideal": 8,
+      "efficiency_percent": 9.76
+    }
+  ],
+  "amdahl_analysis": {
+    "parallel_fraction_P": 0.7,
+    "serial_fraction_s": 0.3,
+    "theoretical_max_speedup": 3.33,
+    "theoretical_curve": [
+      {
+        "cores": 1,
+        "speedup_teorico": 1.0,
+        "speedup_ideal": 1
+      },
+      {
+        "cores": 2,
+        "speedup_teorico": 1.538,
+        "speedup_ideal": 2
+      },
+      {
+        "cores": 4,
+        "speedup_teorico": 2.105,
+        "speedup_ideal": 4
+      },
+      {
+        "cores": 6,
+        "speedup_teorico": 2.4,
+        "speedup_ideal": 6
+      },
+      {
+        "cores": 8,
+        "speedup_teorico": 2.581,
+        "speedup_ideal": 8
+      },
+      {
+        "cores": 12,
+        "speedup_teorico": 2.791,
+        "speedup_ideal": 12
+      },
+      {
+        "cores": 16,
+        "speedup_teorico": 2.909,
+        "speedup_ideal": 16
+      },
+      {
+        "cores": 24,
+        "speedup_teorico": 3.038,
+        "speedup_ideal": 24
+      },
+      {
+        "cores": 32,
+        "speedup_teorico": 3.107,
+        "speedup_ideal": 32
+      },
+      {
+        "cores": 64,
+        "speedup_teorico": 3.216,
+        "speedup_ideal": 64
+      }
+    ],
+    "formula": "S(p) = 1 / ((1 - P) + P / p)"
+  },
+  "bottleneck_breakdown": {
+    "network_io_percent": 68.5,
+    "cpu_processing_percent": 21.0,
+    "thread_synchronization_overhead_percent": 10.5,
+    "insights": [
+      "Cuello de botella primario: Latencia de red HTTP/HTTPS y limitadores de tasa (Rate Limiting) de las APIs y tiendas.",
+      "Nivel 1 (Juegos): Otorga la mayor ganancia de aceleración al particionar los juegos de forma completamente desacoplada (embarrassingly parallel).",
+      "Nivel 2 (Fuentes): Amortigua la latencia de red consultando Tiendas, Metacritic y HowLongToBeat en paralelo para cada juego.",
+      "Nivel 3 (Tiendas): Minimiza el tiempo de espera por cada juego extrayendo simultáneamente en Steam, Epic, PS Store y Amazon.",
+      "Overhead de sincronización: Con más de 8 núcleos, el retorno marginal disminuye debido a colisiones en sockets de red y contención de locks del recolector/procesos."
+    ]
+  }
+}
