@@ -1,0 +1,11 @@
+{
+  "store": "Amazon",
+  "platform": "Switch",
+  "format": "physical",
+  "current_price": 51.24,
+  "regular_price": 59.99,
+  "discount_pct": 15,
+  "url": "https://...",
+  "fetched_at": "2026-11-06T14:30:00Z",
+  "ok": true
+}

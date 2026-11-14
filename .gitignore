@@ -1,0 +1,10 @@
+﻿venv/
+__pycache__/
+serviceAccountKey.json
+.env
+*.log
+
+scraper/*_report.csv
+scraper/mc_decoded.json
+scraper/mc_elden.html
+__pycache__/

@@ -1,0 +1,23 @@
+{
+  "id": "zelda-botw",
+  "name": "The Legend of Zelda: Breath of the Wild",
+  "image_url": "https://...",
+  "platforms": ["Switch", "Wii U"],
+  "release_date": "2017-03-03",
+  "msrp": 59.99,
+
+  "best_price": 51.24,
+  "best_store": "Amazon",
+  "regular_price": 59.99,
+  "discount_pct": 15,
+  "on_sale": true,
+  "stores": ["Amazon", "Nintendo eShop"],
+  "formats": ["physical", "digital"],
+
+  "metacritic": { "Switch": 97, "Wii U": 97 },
+  "metacritic_best": 97,
+  "hltb": { "main": 50.5, "main_extra": 98, "completionist": 180 },
+
+  "last_updated": "2026-11-06T14:30:00Z",
+  "scrape_status": "ok"
+}

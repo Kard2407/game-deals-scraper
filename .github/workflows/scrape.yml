@@ -1,0 +1,38 @@
+name: Scheduled Web Scraping
+
+on:
+  schedule:
+    # Ejecución cada 12 horas (a las 00:00 y 12:00 UTC)
+    - cron: '0 0,12 * * *'
+  workflow_dispatch: # Permite ejecución manual desde la interfaz de GitHub
+
+jobs:
+  scrape-and-update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Instalar dependencias
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Configurar Firebase Service Account
+        env:
+          FIREBASE_KEY_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          if [ -n "$FIREBASE_KEY_JSON" ]; then
+            echo "$FIREBASE_KEY_JSON" > scraper/serviceAccountKey.json
+          fi
+
+      - name: Ejecutar Scraping Paralelo Multinúcleo
+        run: |
+          python scraper/main.py --workers 4
