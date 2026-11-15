@@ -1,5 +1,5 @@
 /**
- * Data Loader Module - Manejo de datos y sincronización con REPO
+ * Data Loader Module - Manejo de datos y sincronización con Firestore / REPO
  * IC3101 Arquitectura de Computadoras - III Proyecto: Web Scraping Multinúcleo
  * Bloque 2: Frontend & Performance - Adrián Sánchez
  */
@@ -9,7 +9,6 @@ const DataLoader = (() => {
   let isLoaded = false;
   let lastSyncTime = null;
 
-  // Fallback seguro de juegos si se abre directamente por file:/// sin servidor local
   const FALLBACK_GAMES = [
     {
       "id": "game-001",
@@ -33,57 +32,90 @@ const DataLoader = (() => {
       ],
       "best_deal": { "store_name": "Steam", "price": 12.49, "regular_price": 49.99, "discount_percent": 75, "format": "Digital", "platform": "PC", "savings": 37.50, "url": "https://store.steampowered.com/app/292030/" },
       "scraped_at": new Date().toISOString()
-    },
-    {
-      "id": "game-002",
-      "title": "Cyberpunk 2077: Ultimate Edition",
-      "slug": "cyberpunk-2077",
-      "cover_image": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1091500/header.jpg",
-      "backdrop_image": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1091500/page_bg_generated_v6b.jpg",
-      "release_date": "2020-12-10",
-      "publisher": "CD PROJEKT RED",
-      "developer": "CD PROJEKT RED",
-      "suggested_price": 59.99,
-      "metacritic": { "score": 86, "user_score": 7.8, "url": "https://www.metacritic.com/game/cyberpunk-2077/" },
-      "howlongtobeat": { "main_story_hours": 25.0, "main_extra_hours": 60, "completionist_hours": 104 },
-      "platforms": ["PC", "PlayStation 5", "Xbox Series X/S"],
-      "genres": ["RPG", "Ciencia Ficción", "Acción"],
-      "description": "Cyberpunk 2077 es una historia de acción y aventura en mundo abierto ambientada en Night City, una megalópolis obsesionada con el poder, el glamour y las modificaciones corporales.",
-      "stores": [
-        { "store_name": "Steam", "format": "Digital", "platform": "PC", "regular_price": 59.99, "current_price": 29.99, "discount_percent": 50, "url": "https://store.steampowered.com/app/1091500/", "in_stock": true },
-        { "store_name": "GOG", "format": "Digital", "platform": "PC", "regular_price": 59.99, "current_price": 29.99, "discount_percent": 50, "url": "https://www.gog.com/", "in_stock": true }
-      ],
-      "best_deal": { "store_name": "Steam", "price": 29.99, "regular_price": 59.99, "discount_percent": 50, "format": "Digital", "platform": "PC", "savings": 30.00, "url": "https://store.steampowered.com/app/1091500/" },
-      "scraped_at": new Date().toISOString()
-    },
-    {
-      "id": "game-003",
-      "title": "Elden Ring",
-      "slug": "elden-ring",
-      "cover_image": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1245620/header.jpg",
-      "backdrop_image": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1245620/page_bg_generated_v6b.jpg",
-      "release_date": "2022-02-25",
-      "publisher": "FromSoftware",
-      "developer": "FromSoftware",
-      "suggested_price": 59.99,
-      "metacritic": { "score": 96, "user_score": 8.2, "url": "https://www.metacritic.com/game/elden-ring/" },
-      "howlongtobeat": { "main_story_hours": 58.5, "main_extra_hours": 100, "completionist_hours": 134 },
-      "platforms": ["PC", "PlayStation 5", "PlayStation 4", "Xbox Series X/S", "Xbox One"],
-      "genres": ["Souls-like", "Acción", "Fantasía Oscura"],
-      "description": "Álzate, Sinluz, y déjate guiar por la gracia para esgrimir el poder del Círculo de Elden y convertirte en el Señor del Círculo en las Tierras Intermedias.",
-      "stores": [
-        { "store_name": "Steam", "format": "Digital", "platform": "PC", "regular_price": 59.99, "current_price": 35.99, "discount_percent": 40, "url": "https://store.steampowered.com/app/1245620/", "in_stock": true },
-        { "store_name": "PlayStation Store", "format": "Digital", "platform": "PlayStation 5", "regular_price": 59.99, "current_price": 41.99, "discount_percent": 30, "url": "https://store.playstation.com/", "in_stock": true }
-      ],
-      "best_deal": { "store_name": "Steam", "price": 35.99, "regular_price": 59.99, "discount_percent": 40, "format": "Digital", "platform": "PC", "savings": 24.00, "url": "https://store.steampowered.com/app/1245620/" },
-      "scraped_at": new Date().toISOString()
     }
   ];
 
   /**
-   * Carga el archivo games.json con tolerancia a fallos
+   * Normaliza cada documento de Firestore al esquema esperado por el Frontend
+   */
+  function normalizeGameDoc(docId, raw) {
+    const title = raw.title || raw.name || "Juego sin título";
+    const slug = raw.slug || title.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+    const stores = Array.isArray(raw.stores) ? raw.stores : [];
+
+    let bestDeal = raw.best_deal || null;
+    if (!bestDeal && stores.length > 0) {
+      const sorted = [...stores].sort((a, b) => (a.current_price ?? 999) - (b.current_price ?? 999));
+      const best = sorted[0];
+      const reg = best.regular_price || raw.msrp || raw.suggested_price || best.current_price || 0;
+      const cur = best.current_price ?? reg;
+      bestDeal = {
+        store_name: best.store_name || "Tienda",
+        price: cur,
+        regular_price: reg,
+        discount_percent: best.discount_percent ?? (reg > 0 ? Math.round((1 - cur / reg) * 100) : 0),
+        format: best.format || "Digital",
+        platform: best.platform || (Array.isArray(raw.platforms) && raw.platforms[0]) || "PC",
+        savings: +(reg - cur).toFixed(2),
+        url: best.url || "#"
+      };
+    }
+
+    return {
+      id: raw.id || docId,
+      title,
+      slug,
+      cover_image: raw.cover_image || "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/292030/header.jpg",
+      backdrop_image: raw.backdrop_image || raw.cover_image || "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/292030/page_bg_generated_v6b.jpg",
+      release_date: raw.release_date || "2024-01-01",
+      publisher: raw.publisher || "Desconocido",
+      developer: raw.developer || raw.publisher || "Desconocido",
+      suggested_price: raw.suggested_price || raw.msrp || (bestDeal ? bestDeal.regular_price : 59.99),
+      metacritic: raw.metacritic || { score: null, user_score: null, url: "#" },
+      howlongtobeat: raw.howlongtobeat || { main_story_hours: null, main_extra_hours: null, completionist_hours: null },
+      platforms: Array.isArray(raw.platforms) ? raw.platforms : ["PC"],
+      genres: Array.isArray(raw.genres) ? raw.genres : ["Acción"],
+      description: raw.description || `Ofertas y métricas recopiladas para ${title}.`,
+      stores,
+      best_deal: bestDeal,
+      scraped_at: raw.updated_at || raw.scraped_at || new Date().toISOString()
+    };
+  }
+
+  /**
+   * Espera brevemente a que el módulo ES de Firebase termine de inicializarse
+   */
+  async function waitForFirebaseBridge(maxWaitMs = 1500) {
+    const start = Date.now();
+    while (!window.FirebaseBridge && (Date.now() - start) < maxWaitMs) {
+      await new Promise(r => setTimeout(r, 50));
+    }
+    return window.FirebaseBridge || null;
+  }
+
+  /**
+   * Carga datos desde Firestore ('games') con fallback a data/games.json
    */
   async function loadData() {
+    // 1. Intentar leer desde Firebase Firestore
+    try {
+      const bridge = await waitForFirebaseBridge();
+      if (bridge && bridge.db) {
+        const snapshot = await bridge.getDocs(bridge.collection(bridge.db, "games"));
+        if (!snapshot.empty) {
+          gamesDataset = snapshot.docs.map(doc => normalizeGameDoc(doc.id, doc.data()));
+          isLoaded = true;
+          lastSyncTime = new Date();
+          console.log(`[DataLoader] Sincronizados ${gamesDataset.length} juegos desde Firebase Firestore.`);
+          return gamesDataset;
+        }
+        console.warn("[DataLoader] La colección 'games' en Firestore está vacía. Usando data/games.json...");
+      }
+    } catch (fbErr) {
+      console.warn("[DataLoader] No se pudo leer desde Firestore, cambiando a respaldo local:", fbErr);
+    }
+
+    // 2. Respaldo local data/games.json
     try {
       const response = await fetch('data/games.json?t=' + Date.now());
       if (!response.ok) {
@@ -99,7 +131,7 @@ const DataLoader = (() => {
       }
       throw new Error('Formato de dataset no válido');
     } catch (err) {
-      console.warn('[DataLoader] No se pudo cargar data/games.json por fetch (posible protocolo file:/// o ruta relativa). Usando dataset embebido o fallback.', err);
+      console.warn('[DataLoader] Usando FALLBACK_GAMES embebido.', err);
       if (gamesDataset.length === 0) {
         gamesDataset = FALLBACK_GAMES;
         isLoaded = true;
@@ -109,9 +141,6 @@ const DataLoader = (() => {
     }
   }
 
-  /**
-   * Carga manual de dataset a través de input de archivo o Drag & Drop (Integración con Kevin)
-   */
   function importFromJSONString(jsonString) {
     try {
       const data = JSON.parse(jsonString);
