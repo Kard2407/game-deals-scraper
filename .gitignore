@@ -8,3 +8,5 @@ scraper/*_report.csv
 scraper/mc_decoded.json
 scraper/mc_elden.html
 __pycache__/
+
+.firebase/
