@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GameScraper Deals — Catálogo Hottest Deals & Rendimiento Multinúcleo</title>
+  <title>GAMESCRAPER // TELEMETRÍA DE PRECIOS & RENDIMIENTO MULTINÚCLEO</title>
   
-  <!-- Tipografía Google Fonts: Outfit & Inter -->
+  <!-- Tipografía Google Fonts: Syne (Display) & JetBrains Mono (Datos Tabulares) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
 
   <!-- Iconos FontAwesome CDN -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -22,63 +22,61 @@
 <body>
 
   <!-- ==========================================================================
-       Encabezado Principal & Barra de Navegación
+       Encabezado Principal & Barra de Navegación Técnica
        ========================================================================== -->
   <header class="site-header">
     <div class="header-top">
       <div class="logo-group">
         <div class="logo-icon">
-          <i class="fa-solid fa-bolt-lightning"></i>
+          <span>GS_03</span>
         </div>
         <div class="logo-text">
-          <h1>GameScraper Deals</h1>
-          <div class="logo-subtitle">IC3101 Arquitectura de Computadoras • TEC San Carlos</div>
+          <h1>GAMESCRAPER // TERMINAL</h1>
+          <div class="logo-subtitle">SYS.IC3101 :: ARQUITECTURA DE COMPUTADORAS // TEC_SC</div>
         </div>
       </div>
 
       <!-- Navegación por Pestañas del Bloque 2 -->
       <nav class="nav-tabs" role="tablist">
         <button class="tab-btn active" data-view="view-catalog" role="tab" aria-selected="true">
-          <i class="fa-solid fa-fire"></i> Hottest Deals
+          <span class="tab-idx">[01]</span> HOTTEST DEALS
         </button>
         <button class="tab-btn" data-view="view-benchmark" role="tab" aria-selected="false">
-          <i class="fa-solid fa-chart-line"></i> Análisis de Rendimiento
+          <span class="tab-idx">[02]</span> RENDIMIENTO // AMDAHL
         </button>
         <button class="tab-btn" data-view="view-architecture" role="tab" aria-selected="false">
-          <i class="fa-solid fa-sitemap"></i> Arquitectura 3 Niveles
+          <span class="tab-idx">[03]</span> ARQUITECTURA 3-LVL
         </button>
         <button class="tab-btn" data-view="view-sync" role="tab" aria-selected="false">
-          <i class="fa-solid fa-database"></i> Sincronización REPO
+          <span class="tab-idx">[04]</span> SYNC REPO
         </button>
       </nav>
     </div>
 
-    <!-- Ticker de Estadísticas en Vivo -->
+    <!-- Ticker de Telemetría en Vivo -->
     <div class="stats-ticker">
       <div class="ticker-inner">
         <div class="ticker-item">
-          <i class="fa-solid fa-gamepad"></i>
-          <span>Juegos en REPO:</span>
+          <span class="ticker-key">REPO_COUNT:</span>
           <span class="ticker-val" id="ticker-total-games">--</span>
         </div>
         <div class="ticker-item">
-          <i class="fa-solid fa-tags"></i>
-          <span>Ofertas Activas:</span>
+          <span class="ticker-key">ACTIVE_DEALS:</span>
           <span class="ticker-val deal" id="ticker-active-deals">--</span>
         </div>
         <div class="ticker-item">
-          <i class="fa-solid fa-percent"></i>
-          <span>Descuento Máximo:</span>
+          <span class="ticker-key">MAX_DISCOUNT:</span>
           <span class="ticker-val deal" id="ticker-max-discount">--</span>
         </div>
         <div class="ticker-item">
-          <i class="fa-solid fa-star"></i>
-          <span>Metascore Promedio:</span>
+          <span class="ticker-key">AVG_METASCORE:</span>
           <span class="ticker-val" id="ticker-avg-meta">--</span>
         </div>
         <div class="ticker-sync">
           <span class="live-dot"></span>
-          <span>Actualizado: <strong id="ticker-sync-time" style="color: var(--text-main);">En vivo</strong></span>
+          <span class="status-tag">SCRAPER: ONLINE</span>
+          <span class="sync-sep">//</span>
+          <span>LAST SYNC: <strong id="ticker-sync-time">LIVE_STREAM</strong></span>
         </div>
       </div>
     </div>
@@ -94,54 +92,54 @@
          ======================================================================== -->
     <section id="view-catalog" class="view-section active">
       
-      <!-- Panel de Búsqueda y Filtros -->
+      <!-- Panel de Búsqueda y Filtros Reticular -->
       <div class="filters-container">
         <div class="search-bar-row">
           <div class="search-input-wrapper">
-            <i class="fa-solid fa-magnifying-glass"></i>
-            <input type="text" id="search-input" class="search-input" placeholder="Buscar juego por título, editor o palabra clave..." autocomplete="off">
+            <span class="search-prefix">QUERY &gt;</span>
+            <input type="text" id="search-input" class="search-input" placeholder="FILTRAR POR TÍTULO, PUBLISHER O PALABRA CLAVE..." autocomplete="off">
           </div>
           <button id="btn-hottest-deals" class="btn-hottest-toggle" title="Filtrar solo ofertas con 50% o más de descuento">
-            <i class="fa-solid fa-fire-flame-curved"></i> Solo Hottest Deals (≥50%)
+            <i class="fa-solid fa-bolt"></i> SOLO HOTTEST DEALS (≥50% OFF)
           </button>
         </div>
 
         <div class="filter-controls-grid">
           <!-- Filtro Formato -->
           <div class="filter-group">
-            <label for="filter-format"><i class="fa-solid fa-compact-disc"></i> Formato</label>
+            <label for="filter-format"><span>[01] FORMATO</span></label>
             <select id="filter-format" class="select-custom">
-              <option value="all">Todos los Formatos</option>
-              <option value="Digital">Digital</option>
-              <option value="Físico">Físico</option>
+              <option value="all">ALL_FORMATS</option>
+              <option value="Digital">DIGITAL</option>
+              <option value="Físico">FÍSICO</option>
             </select>
           </div>
 
           <!-- Filtro Plataforma -->
           <div class="filter-group">
-            <label for="filter-platform"><i class="fa-solid fa-desktop"></i> Plataforma</label>
+            <label for="filter-platform"><span>[02] PLATAFORMA</span></label>
             <select id="filter-platform" class="select-custom">
-              <option value="all">Todas las Plataformas</option>
-              <option value="PC">PC (Windows)</option>
-              <option value="PlayStation 5">PlayStation 5</option>
-              <option value="Xbox Series X/S">Xbox Series X/S</option>
-              <option value="Nintendo Switch">Nintendo Switch</option>
-              <option value="PlayStation 4">PlayStation 4</option>
-              <option value="Xbox One">Xbox One</option>
+              <option value="all">ALL_PLATFORMS</option>
+              <option value="PC">PC (WINDOWS)</option>
+              <option value="PlayStation 5">PLAYSTATION 5</option>
+              <option value="Xbox Series X/S">XBOX SERIES X/S</option>
+              <option value="Nintendo Switch">NINTENDO SWITCH</option>
+              <option value="PlayStation 4">PLAYSTATION 4</option>
+              <option value="Xbox One">XBOX ONE</option>
             </select>
           </div>
 
           <!-- Filtro Tienda -->
           <div class="filter-group">
-            <label for="filter-store"><i class="fa-solid fa-store"></i> Tienda Scrappeada</label>
+            <label for="filter-store"><span>[03] FUENTE / TIENDA</span></label>
             <select id="filter-store" class="select-custom">
-              <option value="all">Todas las Tiendas</option>
-              <option value="Steam">Steam</option>
-              <option value="Epic Games Store">Epic Games Store</option>
-              <option value="PlayStation Store">PlayStation Store</option>
-              <option value="Xbox Store">Xbox Store</option>
-              <option value="Nintendo eShop">Nintendo eShop</option>
-              <option value="Amazon">Amazon</option>
+              <option value="all">ALL_STORES</option>
+              <option value="Steam">STEAM</option>
+              <option value="Epic Games Store">EPIC GAMES STORE</option>
+              <option value="PlayStation Store">PLAYSTATION STORE</option>
+              <option value="Xbox Store">XBOX STORE</option>
+              <option value="Nintendo eShop">NINTENDO ESHOP</option>
+              <option value="Amazon">AMAZON</option>
               <option value="GOG">GOG</option>
             </select>
           </div>
@@ -149,7 +147,7 @@
           <!-- Filtro Metacritic Score Mínimo -->
           <div class="filter-group">
             <label for="filter-meta-slider">
-              <span><i class="fa-solid fa-award"></i> Metascore Mínimo</span>
+              <span>[04] METASCORE MÍN.</span>
               <span id="filter-meta-val" class="slider-val">0+</span>
             </label>
             <div class="range-slider-wrap">
@@ -159,27 +157,27 @@
 
           <!-- Ordenamiento -->
           <div class="filter-group">
-            <label for="sort-select"><i class="fa-solid fa-arrow-down-short-wide"></i> Ordenar Por</label>
+            <label for="sort-select"><span>[05] ORDENAR POR</span></label>
             <select id="sort-select" class="select-custom">
-              <option value="discount-desc">Mayor Descuento (% OFF)</option>
-              <option value="price-asc">Menor Precio ($ Actual)</option>
-              <option value="price-desc">Mayor Precio ($ Actual)</option>
-              <option value="meta-desc">Mayor Score Metacritic</option>
-              <option value="hltb-asc">Duración de Juego (HowLongToBeat)</option>
-              <option value="title-asc">Título (A - Z)</option>
-              <option value="title-desc">Título (Z - A)</option>
-              <option value="date-desc">Fecha de Lanzamiento</option>
+              <option value="discount-desc">MAYOR DESCUENTO (% OFF)</option>
+              <option value="price-asc">MENOR PRECIO ($ USD)</option>
+              <option value="price-desc">MAYOR PRECIO ($ USD)</option>
+              <option value="meta-desc">MAYOR METASCORE</option>
+              <option value="hltb-asc">DURACIÓN (HLTB ASC)</option>
+              <option value="title-asc">TÍTULO (A → Z)</option>
+              <option value="title-desc">TÍTULO (Z → A)</option>
+              <option value="date-desc">FECHA DE LANZAMIENTO</option>
             </select>
           </div>
 
           <!-- Items por Página -->
           <div class="filter-group">
-            <label for="page-size-select"><i class="fa-solid fa-table-cells"></i> Mostrar</label>
+            <label for="page-size-select"><span>[06] DENSIDAD VISTA</span></label>
             <select id="page-size-select" class="select-custom">
-              <option value="16">16 por página</option>
-              <option value="32">32 por página</option>
-              <option value="64">64 por página</option>
-              <option value="all">Todos los juegos</option>
+              <option value="16">16 REGISTROS / PÁG</option>
+              <option value="32">32 REGISTROS / PÁG</option>
+              <option value="64">64 REGISTROS / PÁG</option>
+              <option value="all">ALL_RECORDS</option>
             </select>
           </div>
         </div>
@@ -188,16 +186,16 @@
       <!-- Barra de Resumen de Resultados -->
       <div class="results-header-bar">
         <div id="results-counter" class="results-count">
-          Cargando catálogo...
+          INICIALIZANDO STREAM DE DATOS...
         </div>
         <div class="results-actions">
           <button id="btn-reset-filters" class="btn-reset-filters">
-            <i class="fa-solid fa-rotate-left"></i> Limpiar Filtros
+            [X] RESET FILTROS
           </button>
         </div>
       </div>
 
-      <!-- Cuadrícula de Tarjetas ("Hottest Deals") -->
+      <!-- Cuadrícula de Especificaciones ("Hottest Deals") -->
       <div id="games-grid" class="games-grid">
         <!-- Renderizado dinámicamente por app.js -->
       </div>
@@ -218,37 +216,38 @@
         <!-- Hero de Rendimiento -->
         <div class="benchmark-hero">
           <div class="hero-text">
-            <h2>⚡ Análisis de Rendimiento Multinúcleo</h2>
+            <span class="section-code">TELEMETRY_MODULE // MULTICORE_BENCHMARK</span>
+            <h2>ANÁLISIS DE RENDIMIENTO MULTINÚCLEO</h2>
             <p>
-              Evaluación experimental del pipeline de Web Scraping comparando la versión secuencial de referencia frente a ejecuciones paralelas con 1, 2, 4 y máximo de núcleos lógicos del sistema.
+              Evaluación experimental del pipeline de Web Scraping comparando ejecución secuencial pura frente a particionamiento paralelo en 1, 2, 4 y N núcleos lógicos.
             </p>
           </div>
           <button class="btn-run-benchmark" onclick="location.reload();" title="Recargar y recalcular métricas">
-            <i class="fa-solid fa-gauge-high"></i> Datos en Vivo
+            [↻] RECARGAR TELEMETRÍA
           </button>
         </div>
 
-        <!-- KPIs Principales -->
+        <!-- KPIs Principales en Retícula -->
         <div class="perf-metrics-grid">
           <div class="perf-metric-card">
-            <span class="label">Núcleos de la Máquina</span>
+            <span class="label">01 // NÚCLEOS DETECTADOS</span>
             <span class="val" id="bench-cores-val">--</span>
-            <span class="sub">CPUs lógicas detectadas</span>
+            <span class="sub">CPUs lógicas disponibles en host</span>
           </div>
           <div class="perf-metric-card">
-            <span class="label">Speedup Máximo Alcanzado</span>
-            <span class="val" id="bench-speedup-val" style="color: var(--accent-deal);">--</span>
-            <span class="sub">Aceleración sobre línea base secuencial</span>
+            <span class="label">02 // SPEEDUP MÁXIMO S(p)</span>
+            <span class="val accent" id="bench-speedup-val">--</span>
+            <span class="sub">Factor de aceleración vs secuencial</span>
           </div>
           <div class="perf-metric-card">
-            <span class="label">Fracción Paralelizable (P)</span>
-            <span class="val" id="bench-p-val" style="color: var(--accent-purple);">--</span>
-            <span class="sub">Estimada empíricamente</span>
+            <span class="label">03 // FRACCIÓN PARALELA (P)</span>
+            <span class="val" id="bench-p-val">--</span>
+            <span class="sub">Estimación empírica del pipeline</span>
           </div>
           <div class="perf-metric-card">
-            <span class="label">Límite Teórico Ley de Amdahl</span>
-            <span class="val" id="bench-smax-val" style="color: var(--accent-hot);">--</span>
-            <span class="sub">Speedup máximo asintótico (S_max)</span>
+            <span class="label">04 // COTA TEÓRICA AMDAHL</span>
+            <span class="val accent" id="bench-smax-val">--</span>
+            <span class="sub">Límite asintótico S_max = 1 / (1 - P)</span>
           </div>
         </div>
 
@@ -256,8 +255,9 @@
         <div class="charts-grid-2col">
           <!-- Gráfico 1: Tiempo de Ejecución -->
           <div class="chart-card">
-            <h3><i class="fa-solid fa-stopwatch" style="color: var(--accent-hot);"></i> Tiempo de Ejecución vs Núcleos</h3>
-            <p>Comparación del tiempo de procesamiento total (Secuencial vs 1, 2, 4, 8 núcleos).</p>
+            <div class="chart-header-meta">FIG. 01 // WALL_CLOCK_TIME</div>
+            <h3>TIEMPO DE EJECUCIÓN VS NÚCLEOS</h3>
+            <p>Comparación del tiempo total de procesamiento (Secuencial vs 1, 2, 4, N núcleos).</p>
             <div class="chart-canvas-wrap">
               <canvas id="chart-execution-time"></canvas>
             </div>
@@ -265,8 +265,9 @@
 
           <!-- Gráfico 2: Speedup Observado vs Ideal -->
           <div class="chart-card">
-            <h3><i class="fa-solid fa-rocket" style="color: var(--accent-deal);"></i> Speedup Observado S(p) vs Ideal Lineal</h3>
-            <p>Medición del factor de aceleración real frente a la ganancia teórica lineal y = x.</p>
+            <div class="chart-header-meta">FIG. 02 // SCALING_FACTOR</div>
+            <h3>SPEEDUP OBSERVADO S(p) VS IDEAL LINEAL</h3>
+            <p>Factor de aceleración empírico frente a escalamiento lineal teórico y = x.</p>
             <div class="chart-canvas-wrap">
               <canvas id="chart-speedup"></canvas>
             </div>
@@ -277,8 +278,9 @@
         <div class="charts-grid-2col">
           <!-- Gráfico 3: Eficiencia de Paralelización -->
           <div class="chart-card">
-            <h3><i class="fa-solid fa-bolt" style="color: var(--accent-primary);"></i> Eficiencia de Paralelización E(p) %</h3>
-            <p>Rendimiento por núcleo asignado E(p) = (S(p) / p) * 100%. Muestra el aprovechamiento de la CPU.</p>
+            <div class="chart-header-meta">FIG. 03 // CPU_UTILIZATION</div>
+            <h3>EFICIENCIA DE PARALELIZACIÓN E(p) %</h3>
+            <p>Rendimiento por núcleo asignado E(p) = (S(p) / p) × 100%.</p>
             <div class="chart-canvas-wrap">
               <canvas id="chart-efficiency"></canvas>
             </div>
@@ -286,8 +288,9 @@
 
           <!-- Gráfico 4: Cuellos de Botella (Red vs CPU) -->
           <div class="chart-card">
-            <h3><i class="fa-solid fa-pie-chart" style="color: var(--accent-purple);"></i> Cuello de Botella: Red (I/O) vs CPU</h3>
-            <p>Distribución de tiempo consumido en latencia HTTP de tiendas vs parseo HTML y cálculo.</p>
+            <div class="chart-header-meta">FIG. 04 // IO_VS_COMPUTE</div>
+            <h3>CUELLO DE BOTELLA: RED (I/O) VS CPU</h3>
+            <p>Distribución de tiempo en latencia HTTP/TLS frente a parseo HTML y cálculo.</p>
             <div class="chart-canvas-wrap">
               <canvas id="chart-bottlenecks"></canvas>
             </div>
@@ -296,58 +299,53 @@
 
         <!-- Simulador Interactivo de la Ley de Amdahl -->
         <div class="amdahl-simulator-card">
-          <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 6px; display: flex; align-items: center; gap: 8px;">
-            <i class="fa-solid fa-square-root-variable" style="color: var(--accent-primary);"></i>
-            Simulador Interactivo de la Ley de Amdahl
-          </h3>
-          <p style="color: var(--text-muted); font-size: 0.9rem;">
-            Ajusta la fracción paralelizable <strong>(P)</strong> de la carga de trabajo de scraping para evaluar cómo responde la curva teórica de aceleración y su convergencia asintótica según la cantidad de procesadores.
+          <div class="chart-header-meta">INTERACTIVE_MODEL // AMDAHL_LAW</div>
+          <h3>SIMULADOR DE LA LEY DE AMDAHL</h3>
+          <p class="simulator-desc">
+            Ajusta la fracción paralelizable <strong>(P)</strong> de la carga de trabajo para proyectar la curva teórica de aceleración y su convergencia asintótica.
           </p>
 
           <div class="slider-container-amdahl">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <label for="amdahl-slider" style="font-weight: 700; font-size: 0.9rem;">
-                Fracción Paralelizable (P): <span id="amdahl-p-slider-val" style="color: var(--accent-primary); font-size: 1.1rem;">83%</span>
+            <div class="slider-header-row">
+              <label for="amdahl-slider">
+                FRACCIÓN PARALELIZABLE (P): <span id="amdahl-p-slider-val" class="mono-accent">83%</span>
               </label>
-              <div style="font-size: 0.85rem; color: var(--text-dim);">
-                Aceleración Máxima Asintótica (p → ∞): <strong id="amdahl-sim-smax" style="color: var(--accent-deal); font-size: 1rem;">5.88x</strong>
+              <div class="slider-stat-right">
+                ACELERACIÓN MÁXIMA ASINTÓTICA (p → ∞): <strong id="amdahl-sim-smax" class="mono-accent">5.88x</strong>
               </div>
             </div>
-            <input type="range" id="amdahl-slider" min="40" max="98" step="1" value="83" style="width: 100%; accent-color: var(--accent-primary); cursor: pointer;">
+            <input type="range" id="amdahl-slider" min="40" max="98" step="1" value="83">
           </div>
 
-          <div class="chart-canvas-wrap" style="height: 320px; margin-top: 14px;">
+          <div class="chart-canvas-wrap" style="height: 320px; margin-top: 16px;">
             <canvas id="chart-amdahl-curve"></canvas>
           </div>
 
           <div class="amdahl-formula-box">
-            <strong>Fórmula Teórica de la Ley de Amdahl:</strong><br>
-            S(p) = 1 / [ (1 - P) + (P / p) ] &nbsp;&nbsp;|&nbsp;&nbsp; Límite Asintótico: S_max = 1 / (1 - P)
+            <strong>ECUACIÓN DE AMDAHL:</strong> S(p) = 1 / [ (1 - P) + (P / p) ] &nbsp;//&nbsp; <strong>LÍMITE:</strong> S_max = 1 / (1 - P)
           </div>
         </div>
 
         <!-- Panel de Análisis Técnico y Cuellos de Botella -->
         <div class="bottleneck-card">
-          <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 8px;">
-            <i class="fa-solid fa-microscope" style="color: var(--accent-deal);"></i>
-            Análisis Técnico del Comportamiento Multinúcleo (Red vs. CPU)
-          </h3>
-          <p style="color: var(--text-muted); font-size: 0.88rem; line-height: 1.5;">
-            Conclusiones técnicas requeridas por la rúbrica del Bloque 2 sobre el comportamiento del sistema y la distribución de tareas concurrentes:
+          <div class="chart-header-meta">SYSTEM_DIAGNOSTICS // IO_BOUND_ANALYSIS</div>
+          <h3>ANÁLISIS TÉCNICO DEL COMPORTAMIENTO MULTINÚCLEO (RED VS. CPU)</h3>
+          <p class="simulator-desc">
+            Conclusiones técnicas sobre la distribución de tareas concurrentes y saturación de hardware:
           </p>
 
           <ul class="bottleneck-list">
             <li>
-              <strong>Naturaleza I/O-Bound (Red vs CPU):</strong> En un pipeline de Web Scraping, más del 65% del tiempo de ciclo corresponde a latencias de red (resolución DNS, negociación SSL/TLS, latencia TCP y políticas de Rate Limiting de los servidores de destino como Steam o Metacritic). La CPU permanece ociosa esperando respuestas de sockets, lo que explica por qué la concurrencia asíncrona y multihilo genera un salto masivo en los primeros núcleos.
+              <strong>[01] NATURALEZA I/O-BOUND (RED VS CPU):</strong> Más del 65% del tiempo de ciclo corresponde a latencias de red (resolución DNS, handshake SSL/TLS, latencia TCP y políticas de Rate Limiting). La CPU permanece ociosa esperando sockets, haciendo que la concurrencia multihilo produzca ganancias inmediatas en los primeros núcleos.
             </li>
             <li>
-              <strong>Impacto del Nivel 1 (Juegos):</strong> La división a nivel de juegos es "vergonzosamente paralela" (embarrassingly parallel), ya que no existe dependencia de datos entre títulos distintos. Permite distribuir lotes de juegos equitativamente entre los núcleos sin riesgo de condiciones de carrera (Race Conditions).
+              <strong>[02] IMPACTO DEL NIVEL 1 (JUEGOS):</strong> El particionamiento por juego es <em>embarrassingly parallel</em> al no existir dependencias de datos entre títulos, permitiendo balanceo equitativo sin condiciones de carrera.
             </li>
             <li>
-              <strong>Impacto del Nivel 2 y 3 (Fuentes y Tiendas):</strong> Solapar la consulta de Metacritic, HowLongToBeat y las tiendas de venta amortigua el tiempo muerto de red. En lugar de sumar 400ms secuenciales por juego, el tiempo total converge al tiempo de la fuente más lenta (max latency).
+              <strong>[03] IMPACTO DEL NIVEL 2 Y 3 (FUENTES Y TIENDAS):</strong> Solapar consultas a Metacritic, HowLongToBeat y tiendas amortigua el tiempo muerto de red: el tiempo total por juego converge al de la fuente más lenta (<code>max_latency</code>) en lugar de sumar latencias secuenciales.
             </li>
             <li>
-              <strong>Saturación de Amdahl y Overhead de Sincronización:</strong> A partir de 8 núcleos lógicos, la curva de eficiencia cae debido a la contención en el Global Interpreter Lock / sockets locales, overhead de context-switch y la sección serial del algoritmo (consolidación y persistencia en base de datos), validando empíricamente la cota superior descrita por Amdahl.
+              <strong>[04] SATURACIÓN DE AMDAHL Y OVERHEAD:</strong> Superados los 8 núcleos lógicos, la eficiencia decrece por contención de sockets locales, cambios de contexto y la fracción serial de consolidación y escritura en base de datos.
             </li>
           </ul>
         </div>
@@ -361,72 +359,74 @@
          ======================================================================== -->
     <section id="view-architecture" class="view-section">
       <div class="arch-diagram-wrapper">
-        <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 8px;">
-          <i class="fa-solid fa-sitemap" style="color: var(--accent-primary);"></i>
-          Diagrama de Arquitectura Multinúcleo en 3 Niveles
-        </h2>
-        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 24px;">
-          Estructura de concurrencia y paralelismo implementada para la extracción eficiente de 200+ videojuegos.
+        <div class="chart-header-meta">PIPELINE_SPEC // 3_TIER_CONCURRENCY</div>
+        <h2>ARQUITECTURA MULTINÚCLEO EN 3 NIVELES</h2>
+        <p class="simulator-desc" style="margin-bottom: 24px;">
+          Topología de paralelismo híbrido (Procesos + Hilos) implementada para la extracción de 200+ videojuegos.
         </p>
 
         <!-- Bloque Nivel 1 -->
-        <div class="arch-level-block" style="border-left: 4px solid var(--accent-primary);">
-          <div class="arch-level-title">
-            <i class="fa-solid fa-layer-group"></i> Nivel 1: Concurrencia de Juegos (Particionamiento Grueso)
+        <div class="arch-level-block">
+          <div class="arch-level-header">
+            <span class="arch-badge">TIER_01</span>
+            <div class="arch-level-title">NIVEL 1: CONCURRENCIA DE JUEGOS (PARTICIONAMIENTO GRUESO)</div>
           </div>
           <p class="arch-level-desc">
-            Cada juego del repositorio (200+ títulos) se asigna como una tarea independiente procesada en paralelo a través de un pool de trabajadores multinúcleo (ProcessPoolExecutor / Multiprocessing). No existen dependencias entre juegos, garantizando un escalamiento óptimo sin bloqueos mutuos.
+            Cada juego del repositorio (200+ títulos) se asigna como una unidad de trabajo independiente ejecutada mediante un pool de procesos (<code>ProcessPoolExecutor</code> / <code>Multiprocessing</code>) distribuido entre los núcleos físicos/lógicos del procesador.
           </p>
           <div class="arch-tags-row">
-            <span class="arch-tag">Paralelismo CPU Multinúcleo</span>
-            <span class="arch-tag">200+ Juegos Independientes</span>
-            <span class="arch-tag">Balanceo de Carga Dinámico</span>
+            <span class="arch-tag">MULTIPROCESSING_POOL</span>
+            <span class="arch-tag">200+ TÍTULOS DESACOPLADOS</span>
+            <span class="arch-tag">ZERO_LOCK_CONTENTION</span>
           </div>
         </div>
 
         <!-- Bloque Nivel 2 -->
-        <div class="arch-level-block" style="border-left: 4px solid var(--accent-deal);">
-          <div class="arch-level-title">
-            <i class="fa-solid fa-network-wired"></i> Nivel 2: Concurrencia entre Fuentes por Juego (Particionamiento Medio)
+        <div class="arch-level-block">
+          <div class="arch-level-header">
+            <span class="arch-badge">TIER_02</span>
+            <div class="arch-level-title">NIVEL 2: CONCURRENCIA ENTRE FUENTES POR JUEGO (PARTICIONAMIENTO MEDIO)</div>
           </div>
           <p class="arch-level-desc">
-            Para un mismo juego en ejecución, se lanzan consultas asíncronas concurrentes (ThreadPoolExecutor) hacia las diferentes fuentes de información especializadas: <strong>Tiendas de Venta</strong>, <strong>Metacritic</strong> (score de crítica y usuarios) y <strong>HowLongToBeat</strong> (horas estimadas de gameplay).
+            Dentro de cada worker de juego, se despachan hilos concurrentes (<code>ThreadPoolExecutor</code>) hacia fuentes heterogéneas: <strong>Tiendas de Venta</strong>, <strong>Metacritic</strong> (Metascore y User Score) y <strong>HowLongToBeat</strong> (tiempos de campaña).
           </p>
           <div class="arch-tags-row">
-            <span class="arch-tag">Mapeo Asíncrono</span>
-            <span class="arch-tag">Metacritic API / Scrape</span>
-            <span class="arch-tag">HowLongToBeat Scrape</span>
-            <span class="arch-tag">Amortiguación de Latencia</span>
+            <span class="arch-tag">THREAD_POOL_IO</span>
+            <span class="arch-tag">METACRITIC_PARSER</span>
+            <span class="arch-tag">HLTB_EXTRACTOR</span>
+            <span class="arch-tag">LATENCY_HIDING</span>
           </div>
         </div>
 
         <!-- Bloque Nivel 3 -->
-        <div class="arch-level-block" style="border-left: 4px solid var(--accent-hot);">
-          <div class="arch-level-title">
-            <i class="fa-solid fa-cart-shopping"></i> Nivel 3: Extracción Paralela en Tiendas (Particionamiento Fino)
+        <div class="arch-level-block">
+          <div class="arch-level-header">
+            <span class="arch-badge">TIER_03</span>
+            <div class="arch-level-title">NIVEL 3: EXTRACCIÓN PARALELA EN TIENDAS (PARTICIONAMIENTO FINO)</div>
           </div>
           <p class="arch-level-desc">
-            Dentro del módulo de tiendas, se extrae en paralelo el catálogo de precios de al menos 2 tiendas simultáneas (Steam, Epic Games Store, PlayStation Store, Xbox Store, Nintendo eShop, Amazon). Se parsea el precio actual, precio regular, formato (digital/físico), stock y se calcula el porcentaje de descuento en memoria para alimentar el badge de <em>"Hottest Deals"</em>.
+            Consulta simultánea en múltiples plataformas comerciales (Steam, Epic Games Store, PlayStation Store, Xbox Store, Nintendo eShop, Amazon, GOG). Normaliza precio regular, precio actual, formato (digital/físico), stock y calcula el porcentaje de descuento.
           </p>
           <div class="arch-tags-row">
-            <span class="arch-tag">Multi-Store Concurrente</span>
-            <span class="arch-tag">Detección de Ofertas (% OFF)</span>
-            <span class="arch-tag">Gestión de Retries y Pausas</span>
+            <span class="arch-tag">MULTI_STORE_SCRAPE</span>
+            <span class="arch-tag">DISCOUNT_CALCULATION</span>
+            <span class="arch-tag">RATE_LIMIT_BACKOFF</span>
           </div>
         </div>
 
         <!-- Bloque Persistencia y Publicación -->
-        <div class="arch-level-block" style="border-left: 4px solid var(--accent-purple);">
-          <div class="arch-level-title">
-            <i class="fa-solid fa-server"></i> Persistencia, REPO y Despliegue Web Público
+        <div class="arch-level-block">
+          <div class="arch-level-header">
+            <span class="arch-badge">TIER_04</span>
+            <div class="arch-level-title">PERSISTENCIA, REPO Y TELEMETRÍA WEB</div>
           </div>
           <p class="arch-level-desc">
-            Los resultados consolidados se validan, se estampan con marca de tiempo UTC y se persisten en la base de datos (JSON estructurado / Firebase / REST API). La aplicación web pública (Bloque 2) consume estos datos en tiempo real para ofrecer el catálogo con filtros, ordenamientos y la modal detallada accesible por URL.
+            Consolidación de registros con marca de tiempo UTC hacia repositorio estructurado (JSON / Firebase Firestore) consumido directamente por este terminal web para filtrado, ordenamiento y diagnóstico de rendimiento.
           </p>
           <div class="arch-tags-row">
-            <span class="arch-tag">Integración Continua con REPO</span>
-            <span class="arch-tag">Interfaz Reactiva</span>
-            <span class="arch-tag">Despliegue Público por URL</span>
+            <span class="arch-tag">UTC_TIMESTAMPED</span>
+            <span class="arch-tag">FIRESTORE_/_JSON_REPO</span>
+            <span class="arch-tag">CLIENT_SIDE_TELEMETRY</span>
           </div>
         </div>
 
@@ -439,34 +439,32 @@
          ======================================================================== -->
     <section id="view-sync" class="view-section">
       <div class="sync-panel-wrap">
-        <h2 style="font-size: 1.4rem; font-weight: 800; margin-bottom: 6px; display: flex; align-items: center; gap: 10px;">
-          <i class="fa-solid fa-database" style="color: var(--accent-primary);"></i>
-          Sincronización con el REPO de Juegos
-        </h2>
-        <p style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 18px;">
-          Esta interfaz se conecta con el módulo de Kevin (Bloque 1) para importar el dataset dinámico de 200+ videojuegos extraídos por el scraper multinúcleo.
+        <div class="chart-header-meta">DATA_INGESTION // REPO_SYNC</div>
+        <h2>SINCRONIZACIÓN CON EL REPO DE JUEGOS</h2>
+        <p class="simulator-desc" style="margin-bottom: 18px;">
+          Conector con el Bloque 1 (Backend Scraper) para ingestar manualmente o recargar el dataset consolidado de videojuegos.
         </p>
 
         <!-- Zona Drag & Drop -->
         <div id="repo-dropzone" class="dropzone-box">
-          <i class="fa-solid fa-cloud-arrow-up"></i>
-          <h4 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 4px;">Arrastra el archivo games.json aquí</h4>
-          <p style="font-size: 0.82rem; color: var(--text-dim); margin-bottom: 14px;">o haz clic para seleccionar el archivo exportado por el backend de Kevin</p>
+          <div class="dropzone-code">[DROP_JSON_PAYLOAD]</div>
+          <h4>ARRASTRA EL ARCHIVO GAMES.JSON AQUÍ</h4>
+          <p>O selecciona manualmente el archivo exportado por el pipeline de scraping</p>
           <input type="file" id="repo-file-input" accept=".json" style="display: none;">
           <button type="button" class="btn-reset-filters" onclick="document.getElementById('repo-file-input').click();" style="margin: 0 auto;">
-            <i class="fa-solid fa-folder-open"></i> Seleccionar games.json
+            [+] SELECCIONAR ARCHIVO .JSON
           </button>
         </div>
 
-        <div id="sync-status-msg" style="display: none; padding: 12px; border-radius: var(--radius-sm); font-size: 0.88rem; margin-bottom: 16px; text-align: center;"></div>
+        <div id="sync-status-msg" class="sync-status-banner"></div>
 
         <!-- Botón Recarga Directa -->
-        <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 14px; border-top: 1px solid var(--bg-border);">
-          <div style="font-size: 0.85rem; color: var(--text-muted);">
-            Ruta local por defecto: <code>web/data/games.json</code>
+        <div class="sync-footer-bar">
+          <div class="sync-path-label">
+            DEFAULT_SOURCE: <code>web/data/games.json</code>
           </div>
-          <button id="btn-reload-data" class="btn-hottest-toggle" style="background: var(--bg-card); color: var(--accent-primary); border-color: var(--accent-primary);">
-            <i class="fa-solid fa-rotate"></i> Sincronizar Ahora
+          <button id="btn-reload-data" class="btn-hottest-toggle">
+            [↻] SINCRONIZAR AHORA
           </button>
         </div>
       </div>
@@ -481,7 +479,7 @@
   <div id="game-detail-modal" class="modal-overlay" role="dialog" aria-modal="true">
     <div class="modal-card">
       <button id="modal-close-btn" class="btn-close-modal" aria-label="Cerrar modal">
-        <i class="fa-solid fa-xmark"></i>
+        [ESC / X]
       </button>
 
       <!-- Banner de Cabecera con Arte del Juego -->
@@ -490,6 +488,7 @@
         <div class="modal-header-content">
           <img id="modal-cover-thumb" src="" alt="" class="modal-cover-thumb">
           <div class="modal-header-titles">
+            <span class="modal-record-tag">GAME_RECORD_INSPECTOR</span>
             <h2 id="modal-title" class="modal-title">Título del Juego</h2>
             <div id="modal-publisher" class="modal-subtitles">Editor • Fecha de Lanzamiento</div>
           </div>
@@ -504,16 +503,16 @@
           <!-- Metacritic Panel -->
           <div class="metric-panel">
             <div class="section-subtitle">
-              <i class="fa-solid fa-award" style="color: var(--accent-hot);"></i> Calificación Metacritic
+              [01] CALIFICACIÓN METACRITIC
             </div>
-            <div style="display: flex; align-items: center; gap: 14px; margin-top: 8px;">
-              <div id="modal-meta-box" class="meta-score-box meta-green" style="width: 48px; height: 42px; font-size: 1.3rem;">
+            <div class="meta-panel-row">
+              <div id="modal-meta-box" class="meta-score-box meta-green">
                 --
               </div>
               <div>
-                <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-main);">Metascore Oficial</div>
-                <div style="font-size: 0.78rem; color: var(--text-muted);">
-                  User Score: <strong id="modal-user-score" style="color: var(--accent-primary);">--</strong> / 10
+                <div class="meta-panel-label">METASCORE OFICIAL</div>
+                <div class="meta-panel-sub">
+                  USER_SCORE: <strong id="modal-user-score">--</strong> / 10
                 </div>
               </div>
             </div>
@@ -522,18 +521,18 @@
           <!-- HowLongToBeat Panel -->
           <div class="metric-panel">
             <div class="section-subtitle">
-              <i class="fa-regular fa-clock" style="color: var(--accent-deal);"></i> Tiempo Estimado (HowLongToBeat)
+              [02] TELEMETRÍA HOWLONGTOBEAT
             </div>
             <div class="hltb-row">
-              <span class="hltb-label">Historia Principal:</span>
+              <span class="hltb-label">MAIN_STORY:</span>
               <span id="modal-hltb-main" class="hltb-val">--</span>
             </div>
             <div class="hltb-row">
-              <span class="hltb-label">Historia + Extras:</span>
+              <span class="hltb-label">MAIN_+_EXTRAS:</span>
               <span id="modal-hltb-extra" class="hltb-val">--</span>
             </div>
             <div class="hltb-row">
-              <span class="hltb-label">Completista (100%):</span>
+              <span class="hltb-label">COMPLETIONIST_100%:</span>
               <span id="modal-hltb-comp" class="hltb-val">--</span>
             </div>
           </div>
@@ -542,20 +541,19 @@
         <!-- Tabla Comparativa Multitienda (Nivel 3) -->
         <div>
           <div class="section-subtitle">
-            <i class="fa-solid fa-tags" style="color: var(--accent-primary);"></i>
-            Comparador de Precios Multitienda (Extracción en Tiempo Real)
+            [03] MATRIZ COMPARATIVA DE PRECIOS MULTITIENDA (TIER_03)
           </div>
           <div class="stores-table-wrap">
             <table class="stores-table">
               <thead>
                 <tr>
-                  <th>Tienda</th>
-                  <th>Plataforma</th>
-                  <th>Formato</th>
-                  <th>Precio Regular</th>
-                  <th>Precio Actual</th>
-                  <th>Oferta</th>
-                  <th>Acción</th>
+                  <th>TIENDA</th>
+                  <th>PLATAFORMA</th>
+                  <th>FORMATO</th>
+                  <th>REGULAR</th>
+                  <th>ACTUAL</th>
+                  <th>DESCUENTO</th>
+                  <th>ENLACE</th>
                 </tr>
               </thead>
               <tbody id="modal-stores-tbody">
@@ -568,10 +566,9 @@
         <!-- Plataformas y Consolas Soportadas -->
         <div>
           <div class="section-subtitle">
-            <i class="fa-solid fa-gamepad" style="color: var(--accent-primary);"></i>
-            Consolas y Plataformas Compatibles
+            [04] PLATAFORMAS COMPATIBLES
           </div>
-          <div id="modal-platforms-list" style="display: flex; flex-wrap: wrap; gap: 8px;">
+          <div id="modal-platforms-list" class="modal-platforms-wrap">
             <!-- Badges renderizados dinámicamente -->
           </div>
         </div>
@@ -579,16 +576,15 @@
         <!-- Sinopsis del Juego -->
         <div>
           <div class="section-subtitle">
-            <i class="fa-solid fa-align-left" style="color: var(--accent-muted);"></i>
-            Sinopsis y Descripción
+            [05] ESPECIFICACIÓN / SINOPSIS
           </div>
           <p id="modal-desc" class="modal-desc-text">
             Cargando descripción...
           </p>
         </div>
 
-        <div style="font-size: 0.75rem; color: var(--text-dim); text-align: right; padding-top: 10px; border-top: 1px solid var(--bg-border);">
-          Última actualización de scraping: <span id="modal-scraped-date">--</span>
+        <div class="modal-footer-stamp">
+          LAST_SCRAPE_TIMESTAMP: <span id="modal-scraped-date">--</span>
         </div>
 
       </div>
@@ -597,18 +593,18 @@
 
 
   <!-- ==========================================================================
-       Pie de Página
+       Pie de Página Técnico
        ========================================================================== -->
   <footer class="site-footer">
     <div class="footer-inner">
       <div class="footer-credits">
-        <strong>IC3101 Arquitectura de Computadoras</strong> — III Proyecto: Web Scraping Multinúcleo
+        <strong>IC3101 ARQUITECTURA DE COMPUTADORAS</strong> // III PROYECTO: WEB SCRAPING MULTINÚCLEO
       </div>
       <div>
-        Instituto Tecnológico de Costa Rica • Campus San Carlos • Escuela de Computación
+        TECNOLÓGICO DE COSTA RICA • CAMPUS SAN CARLOS • ESCUELA DE COMPUTACIÓN
       </div>
-      <div style="color: var(--text-dim); font-size: 0.8rem;">
-        Integrantes: <strong>Kevin Rodríguez</strong> (Bloque 1: Backend & Scraping Multinúcleo) & <strong>Adrián Sánchez</strong> (Bloque 2: Frontend, Performance & Documentación)
+      <div class="footer-team">
+        DEV_TEAM: <strong>KEVIN RODRÍGUEZ</strong> [BLOQUE 1: BACKEND & SCRAPER] // <strong>ADRIÁN SÁNCHEZ</strong> [BLOQUE 2: FRONTEND & TELEMETRÍA]
       </div>
     </div>
   </footer>

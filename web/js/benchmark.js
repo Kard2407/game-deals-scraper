@@ -1,8 +1,3 @@
-/**
- * Benchmark & Rendimiento Multinúcleo (Chart.js)
- * IC3101 Arquitectura de Computadoras - III Proyecto: Web Scraping Multinúcleo
- * Bloque 2: Frontend, Performance & Documentación - Adrián Sánchez
- */
 
 const BenchmarkModule = (() => {
   let benchmarkData = null;
@@ -11,6 +6,22 @@ const BenchmarkModule = (() => {
   let chartEfficiency = null;
   let chartAmdahl = null;
   let chartBottlenecks = null;
+
+  // Paleta Técnica & Tipografía Global
+  const THEME = {
+    fontMono: "'JetBrains Mono', monospace",
+    bgCard: '#1C1E22',
+    bgInput: '#131417',
+    gridLine: '#2E3036',
+    borderStrong: '#646975',
+    textMain: '#F2F2EE',
+    textMuted: '#A3A6AE',
+    textDim: '#6E727C',
+    accentOrange: '#FF4D00',
+    accentOrangeFill: 'rgba(255, 77, 0, 0.14)',
+    neutralBar: '#434750',
+    neutralLight: '#8E939E'
+  };
 
   const FALLBACK_BENCHMARK = {
     "timestamp": "2026-11-13 20:51:04",
@@ -52,7 +63,33 @@ const BenchmarkModule = (() => {
     }
   };
 
+  function configureChartDefaults() {
+    if (typeof Chart === 'undefined') return;
+    Chart.defaults.font.family = THEME.fontMono;
+    Chart.defaults.font.size = 11;
+    Chart.defaults.color = THEME.textMuted;
+  }
+
+  function getCommonTooltipOptions(formatter) {
+    return {
+      backgroundColor: THEME.bgInput,
+      titleColor: THEME.accentOrange,
+      bodyColor: THEME.textMain,
+      borderColor: THEME.borderStrong,
+      borderWidth: 1,
+      cornerRadius: 0,
+      padding: 10,
+      titleFont: { family: THEME.fontMono, weight: '700', size: 11 },
+      bodyFont: { family: THEME.fontMono, weight: '600', size: 11 },
+      displayColors: true,
+      boxWidth: 10,
+      boxHeight: 10,
+      callbacks: formatter ? { label: formatter } : {}
+    };
+  }
+
   async function init() {
+    configureChartDefaults();
     try {
       const res = await fetch('data/benchmark_results.json?t=' + Date.now());
       if (res.ok) {
@@ -77,7 +114,7 @@ const BenchmarkModule = (() => {
     const pVal = benchmarkData.amdahl_analysis ? (benchmarkData.amdahl_analysis.parallel_fraction_P * 100).toFixed(1) : "82.6";
     const sMax = benchmarkData.amdahl_analysis ? benchmarkData.amdahl_analysis.theoretical_max_speedup.toFixed(2) : "5.76";
 
-    document.getElementById('bench-cores-val').textContent = `${benchmarkData.hardware.total_logical_cores} núcleos`;
+    document.getElementById('bench-cores-val').textContent = `${benchmarkData.hardware.total_logical_cores} CORES`;
     document.getElementById('bench-speedup-val').textContent = `${maxSpeedupObj.speedup.toFixed(2)}x`;
     document.getElementById('bench-p-val').textContent = `${pVal}%`;
     document.getElementById('bench-smax-val').textContent = `${sMax}x`;
@@ -85,7 +122,7 @@ const BenchmarkModule = (() => {
 
   function initCharts() {
     const pResults = benchmarkData.parallel_results;
-    const coresLabels = pResults.map(r => `${r.cores} Cores`);
+    const coresLabels = pResults.map(r => `${r.cores} CORES`);
     const times = pResults.map(r => r.time_seconds);
     const speedups = pResults.map(r => r.speedup);
     const speedupIdeals = pResults.map(r => r.speedup_ideal);
@@ -93,19 +130,21 @@ const BenchmarkModule = (() => {
 
     // 1. Gráfico de Tiempo de Ejecución (Secuencial vs Paralelo)
     const ctxTime = document.getElementById('chart-execution-time').getContext('2d');
-    const timeLabels = ['Secuencial', ...coresLabels];
+    const timeLabels = ['SECUENCIAL', ...coresLabels];
     const timeValues = [benchmarkData.sequential_reference.time_seconds, ...times];
-    const timeColors = ['#f59e0b', ...pResults.map(() => '#38bdf8')];
+    const timeColors = [THEME.textMain, ...pResults.map(() => THEME.accentOrange)];
 
     chartTime = new Chart(ctxTime, {
       type: 'bar',
       data: {
         labels: timeLabels,
         datasets: [{
-          label: 'Tiempo de Ejecución (segundos)',
+          label: 'WALL_CLOCK (S)',
           data: timeValues,
           backgroundColor: timeColors,
-          borderRadius: 6
+          borderColor: THEME.bgInput,
+          borderWidth: 1,
+          borderRadius: 0
         }]
       },
       options: {
@@ -113,21 +152,19 @@ const BenchmarkModule = (() => {
         maintainAspectRatio: false,
         plugins: {
           legend: { display: false },
-          tooltip: {
-            callbacks: {
-              label: (ctx) => ` ${ctx.raw} segundos`
-            }
-          }
+          tooltip: getCommonTooltipOptions((ctx) => ` ${ctx.raw} s`)
         },
         scales: {
           y: {
             beginAtZero: true,
-            grid: { color: 'rgba(255, 255, 255, 0.08)' },
-            ticks: { color: '#94a3b8' }
+            grid: { color: THEME.gridLine },
+            border: { color: THEME.borderStrong },
+            ticks: { color: THEME.textMuted, callback: (v) => `${v}s` }
           },
           x: {
             grid: { display: false },
-            ticks: { color: '#94a3b8' }
+            border: { color: THEME.borderStrong },
+            ticks: { color: THEME.textMain, font: { weight: '700' } }
           }
         }
       }
@@ -141,24 +178,29 @@ const BenchmarkModule = (() => {
         labels: coresLabels,
         datasets: [
           {
-            label: 'Speedup Real Observado S(p)',
+            label: 'SPEEDUP REAL OBSERVADO S(p)',
             data: speedups,
-            borderColor: '#10b981',
-            backgroundColor: 'rgba(16, 185, 129, 0.15)',
-            borderWidth: 3,
+            borderColor: THEME.accentOrange,
+            backgroundColor: THEME.accentOrangeFill,
+            borderWidth: 2.5,
             fill: true,
-            tension: 0.2,
+            tension: 0,
+            pointStyle: 'rect',
             pointRadius: 6,
-            pointBackgroundColor: '#10b981'
+            pointHoverRadius: 8,
+            pointBackgroundColor: THEME.accentOrange,
+            pointBorderColor: THEME.bgCard,
+            pointBorderWidth: 1.5
           },
           {
-            label: 'Speedup Ideal Teórico (Lineal)',
+            label: 'SPEEDUP IDEAL LINEAL (y = x)',
             data: speedupIdeals,
-            borderColor: '#64748b',
-            borderWidth: 2,
-            borderDash: [5, 5],
+            borderColor: THEME.neutralLight,
+            borderWidth: 1.5,
+            borderDash: [4, 4],
+            pointStyle: 'rect',
             pointRadius: 4,
-            pointBackgroundColor: '#64748b'
+            pointBackgroundColor: THEME.neutralLight
           }
         ]
       },
@@ -166,17 +208,27 @@ const BenchmarkModule = (() => {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-          legend: { labels: { color: '#f0f4f8' } }
+          legend: {
+            labels: {
+              color: THEME.textMain,
+              usePointStyle: true,
+              pointStyle: 'rect',
+              font: { family: THEME.fontMono, weight: '700', size: 11 }
+            }
+          },
+          tooltip: getCommonTooltipOptions((ctx) => ` ${ctx.dataset.label}: ${ctx.raw}x`)
         },
         scales: {
           y: {
             beginAtZero: true,
-            grid: { color: 'rgba(255, 255, 255, 0.08)' },
-            ticks: { color: '#94a3b8' }
+            grid: { color: THEME.gridLine },
+            border: { color: THEME.borderStrong },
+            ticks: { color: THEME.textMuted, callback: (v) => `${v}x` }
           },
           x: {
-            grid: { color: 'rgba(255, 255, 255, 0.04)' },
-            ticks: { color: '#94a3b8' }
+            grid: { color: THEME.gridLine },
+            border: { color: THEME.borderStrong },
+            ticks: { color: THEME.textMain, font: { weight: '700' } }
           }
         }
       }
@@ -189,10 +241,12 @@ const BenchmarkModule = (() => {
       data: {
         labels: coresLabels,
         datasets: [{
-          label: 'Eficiencia E(p) %',
+          label: 'EFICIENCIA E(p) %',
           data: efficiencies,
-          backgroundColor: efficiencies.map(e => e >= 70 ? '#10b981' : (e >= 40 ? '#f59e0b' : '#ef4444')),
-          borderRadius: 6
+          backgroundColor: efficiencies.map(e => e >= 70 ? THEME.accentOrange : (e >= 40 ? THEME.neutralLight : THEME.neutralBar)),
+          borderColor: THEME.bgInput,
+          borderWidth: 1,
+          borderRadius: 0
         }]
       },
       options: {
@@ -200,25 +254,23 @@ const BenchmarkModule = (() => {
         maintainAspectRatio: false,
         plugins: {
           legend: { display: false },
-          tooltip: {
-            callbacks: {
-              label: (ctx) => ` Eficiencia: ${ctx.raw}%`
-            }
-          }
+          tooltip: getCommonTooltipOptions((ctx) => ` EFICIENCIA: ${ctx.raw}%`)
         },
         scales: {
           y: {
             beginAtZero: true,
             max: 120,
-            grid: { color: 'rgba(255, 255, 255, 0.08)' },
+            grid: { color: THEME.gridLine },
+            border: { color: THEME.borderStrong },
             ticks: {
-              color: '#94a3b8',
+              color: THEME.textMuted,
               callback: (v) => `${v}%`
             }
           },
           x: {
             grid: { display: false },
-            ticks: { color: '#94a3b8' }
+            border: { color: THEME.borderStrong },
+            ticks: { color: THEME.textMain, font: { weight: '700' } }
           }
         }
       }
@@ -231,9 +283,9 @@ const BenchmarkModule = (() => {
       type: 'doughnut',
       data: {
         labels: [
-          'Latencia de Red (I/O HTTP/APIs)',
-          'Procesamiento CPU (Parsing/Regex/Lógica)',
-          'Overhead de Hilos & Sincronización'
+          'LATENCIA RED (I/O HTTP/APIs)',
+          'CÓMPUTO CPU (PARSING/REGEX)',
+          'OVERHEAD HILOS & SYNC'
         ],
         datasets: [{
           data: [
@@ -241,19 +293,28 @@ const BenchmarkModule = (() => {
             bData.cpu_processing_percent,
             bData.thread_synchronization_overhead_percent
           ],
-          backgroundColor: ['#38bdf8', '#10b981', '#f59e0b'],
+          backgroundColor: [THEME.accentOrange, THEME.textMain, THEME.neutralBar],
           borderWidth: 2,
-          borderColor: '#131b2e'
+          borderColor: THEME.bgCard,
+          hoverOffset: 4
         }]
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
+        cutout: '62%',
         plugins: {
           legend: {
             position: 'bottom',
-            labels: { color: '#f0f4f8', font: { size: 11 } }
-          }
+            labels: {
+              color: THEME.textMain,
+              usePointStyle: true,
+              pointStyle: 'rect',
+              padding: 14,
+              font: { family: THEME.fontMono, size: 10, weight: '700' }
+            }
+          },
+          tooltip: getCommonTooltipOptions((ctx) => ` ${ctx.label}: ${ctx.raw}%`)
         }
       }
     });
@@ -279,22 +340,24 @@ const BenchmarkModule = (() => {
         labels: coresRange.map(c => `${c}`),
         datasets: [
           {
-            label: `Curva Ley de Amdahl (P = ${(P * 100).toFixed(1)}%)`,
+            label: `CURVA LEY DE AMDAHL (P = ${(P * 100).toFixed(1)}%)`,
             data: amdahlSpeedups,
-            borderColor: '#a855f7',
-            backgroundColor: 'rgba(168, 85, 247, 0.15)',
+            borderColor: THEME.accentOrange,
+            backgroundColor: THEME.accentOrangeFill,
             fill: true,
-            borderWidth: 3,
-            tension: 0.25,
+            borderWidth: 2.5,
+            tension: 0.15,
+            pointStyle: 'rect',
             pointRadius: 4,
-            pointBackgroundColor: '#a855f7'
+            pointHoverRadius: 6,
+            pointBackgroundColor: THEME.accentOrange
           },
           {
-            label: 'Límite Asintótico S_max = 1 / (1 - P)',
+            label: 'LÍMITE ASINTÓTICO S_max = 1 / (1 - P)',
             data: coresRange.map(() => (1.0 / (1.0 - P)).toFixed(2)),
-            borderColor: '#ef4444',
-            borderWidth: 2,
-            borderDash: [6, 4],
+            borderColor: THEME.textMain,
+            borderWidth: 1.5,
+            borderDash: [5, 5],
             pointRadius: 0
           }
         ]
@@ -303,18 +366,33 @@ const BenchmarkModule = (() => {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-          legend: { labels: { color: '#f0f4f8' } }
+          legend: {
+            labels: {
+              color: THEME.textMain,
+              usePointStyle: true,
+              pointStyle: 'rect',
+              font: { family: THEME.fontMono, weight: '700', size: 11 }
+            }
+          },
+          tooltip: getCommonTooltipOptions((ctx) => ` ${ctx.dataset.label}: ${ctx.raw}x`)
         },
         scales: {
           y: {
             beginAtZero: true,
-            grid: { color: 'rgba(255, 255, 255, 0.08)' },
-            ticks: { color: '#94a3b8' }
+            grid: { color: THEME.gridLine },
+            border: { color: THEME.borderStrong },
+            ticks: { color: THEME.textMuted, callback: (v) => `${v}x` }
           },
           x: {
-            title: { display: true, text: 'Número de Núcleos (p)', color: '#94a3b8' },
-            grid: { color: 'rgba(255, 255, 255, 0.04)' },
-            ticks: { color: '#94a3b8' }
+            title: {
+              display: true,
+              text: 'NÚMERO DE NÚCLEOS (p)',
+              color: THEME.textDim,
+              font: { family: THEME.fontMono, weight: '700', size: 11 }
+            },
+            grid: { color: THEME.gridLine },
+            border: { color: THEME.borderStrong },
+            ticks: { color: THEME.textMain, font: { weight: '700' } }
           }
         }
       }

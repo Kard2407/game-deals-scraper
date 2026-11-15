@@ -1,42 +1,42 @@
 {
-  "timestamp": "2026-11-13 23:25:15",
+  "timestamp": "2026-11-14 18:48:01",
   "hardware": {
     "total_logical_cores": 8,
     "workload_games_tested": 24,
     "total_repo_games": 392
   },
   "sequential_reference": {
-    "time_seconds": 4.023,
+    "time_seconds": 4.217,
     "description": "Ejecución lineal monohilo pura (sin Nivel 1, 2 ni 3 de paralelismo)"
   },
   "parallel_results": [
     {
       "cores": 1,
-      "time_seconds": 3.047,
+      "time_seconds": 3.876,
       "speedup": 1.0,
       "speedup_ideal": 1,
       "efficiency_percent": 100.0
     },
     {
       "cores": 2,
-      "time_seconds": 2.469,
-      "speedup": 1.234,
+      "time_seconds": 3.128,
+      "speedup": 1.239,
       "speedup_ideal": 2,
-      "efficiency_percent": 61.7
+      "efficiency_percent": 61.95
     },
     {
       "cores": 4,
-      "time_seconds": 2.479,
-      "speedup": 1.229,
+      "time_seconds": 2.648,
+      "speedup": 1.464,
       "speedup_ideal": 4,
-      "efficiency_percent": 30.73
+      "efficiency_percent": 36.6
     },
     {
       "cores": 8,
-      "time_seconds": 3.903,
-      "speedup": 0.781,
+      "time_seconds": 3.744,
+      "speedup": 1.035,
       "speedup_ideal": 8,
-      "efficiency_percent": 9.76
+      "efficiency_percent": 12.94
     }
   ],
   "amdahl_analysis": {
