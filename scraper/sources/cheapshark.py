@@ -30,7 +30,7 @@ import requests
 # Constantes
 # ---------------------------------------------------------------------------
 BASE = "https://www.cheapshark.com/api/1.0"
-HEADERS = {"User-Agent": "Mozilla/5.0 (proyecto academico ITCR IC3101)"}
+HEADERS = {"User-Agent": "PixelScrape/1.0 (academic-project-itcr; contact@itcr.ac.cr)"}
 TIMEOUT = 12
 RETRIES = 3
 

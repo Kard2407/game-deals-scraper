@@ -235,26 +235,54 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
 
       // 3. Filtro por Metacritic Score
-      const metaScore = game.metacritic ? game.metacritic.score : 0;
-      if (metaScore < state.filters.minMetacritic) {
+      const rawMeta = (game.metacritic && typeof game.metacritic.score === 'number') 
+        ? game.metacritic.score 
+        : (typeof game.metascore === 'number' ? game.metascore : 0);
+      if (rawMeta < state.filters.minMetacritic) {
         return false;
       }
 
       // 4. Filtro por Formato (Digital / Físico)
       if (state.filters.format !== 'all') {
-        const hasFormat = game.stores && game.stores.some(s => s.format && s.format.toLowerCase() === state.filters.format.toLowerCase());
+        const targetFmt = state.filters.format.toLowerCase();
+        const hasFormat = game.stores && game.stores.some(s => {
+          const f = (s.format || "digital").toLowerCase();
+          if (targetFmt === "digital" && (f === "digital")) return true;
+          if (targetFmt === "físico" && (f === "físico" || f === "physical")) return true;
+          return f.includes(targetFmt);
+        });
         if (!hasFormat) return false;
       }
 
-      // 5. Filtro por Plataforma
+      // 5. Filtro por Plataforma (Mapeo canónico resiliente)
       if (state.filters.platform !== 'all') {
-        const hasPlatform = game.platforms && game.platforms.some(p => p.toLowerCase().includes(state.filters.platform.toLowerCase()));
+        const targetPlat = state.filters.platform.toLowerCase();
+        const normTarget = targetPlat.includes("5") || targetPlat.includes("ps5") ? "ps5" :
+                           targetPlat.includes("4") || targetPlat.includes("ps4") ? "ps4" :
+                           targetPlat.includes("series") || targetPlat.includes("xbox") ? "xbox" :
+                           targetPlat.includes("switch") ? "switch" :
+                           targetPlat.includes("pc") ? "pc" : targetPlat;
+
+        const hasPlatform = game.platforms && game.platforms.some(p => {
+          const pl = p.toLowerCase();
+          if (pl.includes(targetPlat)) return true;
+          if (normTarget === "ps5" && (pl.includes("ps5") || pl.includes("playstation 5"))) return true;
+          if (normTarget === "ps4" && (pl.includes("ps4") || pl.includes("playstation 4"))) return true;
+          if (normTarget === "xbox" && (pl.includes("xbox"))) return true;
+          if (normTarget === "switch" && (pl.includes("switch"))) return true;
+          if (normTarget === "pc" && (pl.includes("pc") || pl.includes("windows"))) return true;
+          return false;
+        });
         if (!hasPlatform) return false;
       }
 
       // 6. Filtro por Tienda
       if (state.filters.store !== 'all') {
-        const hasStore = game.stores && game.stores.some(s => s.store_name.toLowerCase() === state.filters.store.toLowerCase());
+        const targetStore = state.filters.store.toLowerCase();
+        const hasStore = game.stores && game.stores.some(s => {
+          const sName = (s.store_name || s.store || "").toLowerCase();
+          return sName.includes(targetStore) || targetStore.includes(sName);
+        });
         if (!hasStore) return false;
       }
 

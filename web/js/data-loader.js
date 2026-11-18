@@ -41,38 +41,93 @@ const DataLoader = (() => {
   function normalizeGameDoc(docId, raw) {
     const title = raw.title || raw.name || "Juego sin título";
     const slug = raw.slug || title.toLowerCase().replace(/[^a-z0-9]+/g, "-");
-    const stores = Array.isArray(raw.stores) ? raw.stores : [];
+
+    const rawStores = Array.isArray(raw.stores) ? raw.stores : [];
+    const stores = rawStores.map(s => {
+      const storeName = s.store_name || s.store || "Tienda";
+      const reg = s.regular_price || raw.msrp || raw.suggested_price || s.current_price || 0;
+      const cur = s.current_price ?? reg;
+      const fmt = s.format ? (s.format.toLowerCase() === "physical" || s.format.toLowerCase() === "físico" ? "Físico" : "Digital") : "Digital";
+      const plat = s.platform || (Array.isArray(raw.platforms) && raw.platforms[0]) || "PC";
+      const disc = s.discount_percent ?? s.discount_pct ?? (reg > 0 && cur < reg ? Math.round((1 - cur / reg) * 100) : 0);
+
+      return {
+        store_name: storeName,
+        format: fmt,
+        platform: plat,
+        regular_price: Number(reg),
+        current_price: Number(cur),
+        discount_percent: Number(disc),
+        url: s.url || "#",
+        in_stock: s.in_stock !== false,
+        ok: s.ok !== false
+      };
+    });
 
     let bestDeal = raw.best_deal || null;
     if (!bestDeal && stores.length > 0) {
-      const sorted = [...stores].sort((a, b) => (a.current_price ?? 999) - (b.current_price ?? 999));
+      const validStores = stores.filter(s => s.ok && s.current_price != null);
+      const pool = validStores.length > 0 ? validStores : stores;
+      const sorted = [...pool].sort((a, b) => (a.current_price ?? 999) - (b.current_price ?? 999));
       const best = sorted[0];
       const reg = best.regular_price || raw.msrp || raw.suggested_price || best.current_price || 0;
       const cur = best.current_price ?? reg;
       bestDeal = {
         store_name: best.store_name || "Tienda",
-        price: cur,
-        regular_price: reg,
+        price: Number(cur),
+        regular_price: Number(reg),
         discount_percent: best.discount_percent ?? (reg > 0 ? Math.round((1 - cur / reg) * 100) : 0),
         format: best.format || "Digital",
         platform: best.platform || (Array.isArray(raw.platforms) && raw.platforms[0]) || "PC",
         savings: +(reg - cur).toFixed(2),
         url: best.url || "#"
       };
+    } else if (bestDeal) {
+      bestDeal.store_name = bestDeal.store_name || bestDeal.store || "Tienda";
     }
+
+    let metacritic = { score: null, user_score: null, url: "#" };
+    if (typeof raw.metascore === "number") {
+      metacritic = { score: raw.metascore, user_score: null, url: "#" };
+    } else if (raw.metacritic && typeof raw.metacritic === "object") {
+      metacritic = {
+        score: raw.metacritic.score ?? null,
+        user_score: raw.metacritic.user_score ?? null,
+        url: raw.metacritic.url || "#"
+      };
+    }
+
+    let howlongtobeat = { main_story_hours: null, main_extra_hours: null, completionist_hours: null };
+    if (raw.hltb && typeof raw.hltb === "object") {
+      howlongtobeat = {
+        main_story_hours: raw.hltb.main ?? null,
+        main_extra_hours: raw.hltb.extra ?? null,
+        completionist_hours: raw.hltb.completionist ?? null
+      };
+    } else if (raw.howlongtobeat && typeof raw.howlongtobeat === "object") {
+      howlongtobeat = {
+        main_story_hours: raw.howlongtobeat.main_story_hours ?? null,
+        main_extra_hours: raw.howlongtobeat.main_extra_hours ?? null,
+        completionist_hours: raw.howlongtobeat.completionist_hours ?? null
+      };
+    }
+
+    const resolvedCover = raw.cover_image || raw.image_url || 
+      (rawStores.find(s => s.image_url) && rawStores.find(s => s.image_url).image_url) ||
+      "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80";
 
     return {
       id: raw.id || docId,
       title,
       slug,
-      cover_image: raw.cover_image || "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/292030/header.jpg",
-      backdrop_image: raw.backdrop_image || raw.cover_image || "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/292030/page_bg_generated_v6b.jpg",
+      cover_image: resolvedCover,
+      backdrop_image: raw.backdrop_image || resolvedCover,
       release_date: raw.release_date || "2024-01-01",
       publisher: raw.publisher || "Desconocido",
       developer: raw.developer || raw.publisher || "Desconocido",
       suggested_price: raw.suggested_price || raw.msrp || (bestDeal ? bestDeal.regular_price : 59.99),
-      metacritic: raw.metacritic || { score: null, user_score: null, url: "#" },
-      howlongtobeat: raw.howlongtobeat || { main_story_hours: null, main_extra_hours: null, completionist_hours: null },
+      metacritic,
+      howlongtobeat,
       platforms: Array.isArray(raw.platforms) ? raw.platforms : ["PC"],
       genres: Array.isArray(raw.genres) ? raw.genres : ["Acción"],
       description: raw.description || `Ofertas y métricas recopiladas para ${title}.`,

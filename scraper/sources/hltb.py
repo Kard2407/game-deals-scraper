@@ -34,16 +34,21 @@ def _norm(s: str) -> str:
 
 
 def _search(term: str):
-    """Búsqueda con reintentos y espera creciente ante fallos de red."""
-    last = None
+    """Búsqueda con reintentos y espera ante fallos de red/429/403."""
     for attempt in range(RETRIES):
         try:
-            return HowLongToBeat().search(term) or []
-        except Exception as e:  # la librería no define excepciones propias estables
-            last = e
-            if attempt < RETRIES - 1:
-                time.sleep(3 * (attempt + 1))
-    raise last
+            res = HowLongToBeat().search(term)
+            return res or []
+        except Exception as e:
+            msg = str(e).lower()
+            if "429" in msg or "403" in msg or "bad request" in msg:
+                # Pausa educativa si HLTB rate-limita
+                time.sleep(2.0 * (attempt + 1))
+            elif attempt < RETRIES - 1:
+                time.sleep(1.0 * (attempt + 1))
+            else:
+                return []
+    return []
 
 
 def _hours(v):

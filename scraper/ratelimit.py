@@ -10,10 +10,10 @@ class DomainRateLimiter:
         self._lock = threading.Lock()
         self._last_call = {}
         self._delays = {
-            "store.steampowered.com": 0.4,
-            "cheapshark.com": 0.2,
+            "store.steampowered.com": 0.5,
+            "cheapshark.com": 0.6,
             "metacritic.com": 0.8,
-            "howlongtobeat.com": 0.5,
+            "howlongtobeat.com": 1.2,
         }
 
     def wait(self, url_or_domain: str):
