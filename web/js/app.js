@@ -281,6 +281,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         const targetStore = state.filters.store.toLowerCase();
         const hasStore = game.stores && game.stores.some(s => {
           const sName = (s.store_name || s.store || "").toLowerCase();
+          if (targetStore === "cheapshark") {
+            // CheapShark indexa las tiendas afiliadas (Humble, GameBillet, WinGameStore, GreenManGaming, etc.)
+            return sName !== "steam" && sName !== "";
+          }
           return sName.includes(targetStore) || targetStore.includes(sName);
         });
         if (!hasStore) return false;
