@@ -182,6 +182,8 @@ def fetch_metacritic(game_name: str, platforms: list, release_date: str = None, 
             result["error"] = "no_jsonld"
             return result
         result["metacritic_name"] = meta.get("name")
+        if meta.get("image"):
+            result["image_url"] = meta.get("image")
         year = release_date[:4] if release_date else None
         if not trusted and not _same_game(game_name, meta["name"], year, meta.get("datePublished")):
             result["error"] = "wrong_game"

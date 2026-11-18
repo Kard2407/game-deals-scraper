@@ -48,9 +48,11 @@ def process_single_game(game: Dict) -> Dict:
             image_url = s["image_url"]
             break
 
-    # Metacritic score
+    # Metacritic score e imagen de respaldo
     meta = scraped.get("metacritic") if isinstance(scraped.get("metacritic"), dict) else {}
     metascore = meta.get("score_best") or meta.get("default_score")
+    if not image_url and meta.get("image_url"):
+        image_url = meta.get("image_url")
 
     # How Long To Beat
     hltb = scraped.get("hltb") if isinstance(scraped.get("hltb"), dict) else {}
