@@ -12,8 +12,7 @@ Aplicación web y motor de extracción concurrente en 3 niveles para rastrear y 
 
 Los datos recopilados se almacenan en Cloud Firestore y se consumen directamente desde una interfaz web pública desplegada en Firebase Hosting, acompañados de un módulo de pruebas experimentales para evaluar el rendimiento multinúcleo y la Ley de Amdahl.
 
-**URL Pública:** [https://gamescraper-deals-tec.web.app](https://gamescraper-deals-tec.web.app)
-
+**URL Pública:** https://game-deals-scraperdb.web.app
 ---
 
 ## Ejecución Local
